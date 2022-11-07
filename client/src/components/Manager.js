@@ -17,7 +17,6 @@ function Manager() {
       getUserScopes()
         .then((scopes) => {
           if (scopes.includes('upload:files')) {
-            console.log("manager")
             setIsManager(true)
           }
         })

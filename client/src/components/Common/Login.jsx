@@ -8,7 +8,6 @@ function Login() {
     const navigate = useNavigate();
     const { loginWithRedirect,
         logout,
-        user,
         isAuthenticated,
         getAccessTokenSilently } = useAuth0();
 
@@ -23,10 +22,8 @@ function Login() {
             getUserScopes()
             .then((scopes) => {
                 if (scopes.includes('upload:files')) {
-
                     navigate('/manager')
                 } else {
-                    console.log("works")
                     navigate('/worker')
                 }
             })
