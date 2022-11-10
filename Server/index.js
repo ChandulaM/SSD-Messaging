@@ -5,6 +5,7 @@ var jwks = require('jwks-rsa');
 var https = require('https');
 var path = require('path');
 var fs = require('fs');
+var cors = require('cors');
 require("dotenv").config();
 
 const workerRoutes = require('./routes/worker_routes');
@@ -25,12 +26,13 @@ var jwtCheck = jwt({
     algorithms: [process.env.ALGO]
 });
 
-// app.use(jwtCheck);
+app.use(cors());
+app.use(jwtCheck);
+
+app.use('/workers', workerRoutes);
 app.use('/', (req, res) => {
     res.status(200).json({ "it": "works" })
 })
-
-app.use('/workers', workerRoutes);
 
 const sslServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, 'certs', 'pkey.pem')),

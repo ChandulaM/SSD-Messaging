@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Message from './Message'
 import { useAuth0 } from '@auth0/auth0-react'
 import jwt_decode from 'jwt-decode'
+import axios from 'axios';
 
 function Worker() {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
   const [isWorker, setIsWorker] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     async function getUserScopes() {
@@ -19,10 +21,21 @@ function Worker() {
         .then((scopes) => {
           if (!scopes.includes('upload:files')) {
             setIsWorker(true)
+            getMessages();
           }
         })
     }
   })
+
+  async function getMessages() {
+    const token = await getAccessTokenSilently();
+    const response = await axios.get('https://localhost:8080/workers/', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    console.log(response.data);
+  }
 
   function save() {
     console.log("message was saved")
