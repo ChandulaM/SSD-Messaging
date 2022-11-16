@@ -66,12 +66,11 @@ function Manager() {
   };
 
   const handleUpload = (e) => {
-    setLoading(true);
     e.preventDefault();
     if (file.length === 0) {
       alert("Please select a file !");
     } else {
-      console.log(file);
+      setLoading(true);
       const storageRef = ref(storage, `/files/${file.type}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
