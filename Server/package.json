@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ChandulaM",
@@ -15,6 +15,8 @@
     "express": "^4.18.2",
     "express-jwt": "^7.7.7",
     "express-jwt-permissions": "^1.3.7",
-    "jwks-rsa": "^3.0.0"
+    "jwks-rsa": "^3.0.0",
+    "mongoose": "^6.7.2",
+    "nodemon": "^2.0.20"
   }
 }

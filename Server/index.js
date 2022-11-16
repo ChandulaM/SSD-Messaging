@@ -6,13 +6,15 @@ var https = require('https');
 var path = require('path');
 var fs = require('fs');
 var cors = require('cors');
+var DBConnection = require('./db/DBConnection')
 require("dotenv").config();
 
 const workerRoutes = require('./routes/worker_routes');
-
+const managerRoutes = require('./routes/manager_routes');
+const messageRoutes = require('./routes/message_routes');
 var port = process.env.PORT || 8080;
 
-console.log(process.env.JWT_AUDIENCE)
+DBConnection();
 
 var jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
@@ -27,9 +29,13 @@ var jwtCheck = jwt({
 });
 
 app.use(cors());
-app.use(jwtCheck);
+app.use(express.json());
+
+// app.use(jwtCheck);
 
 app.use('/workers', workerRoutes);
+app.use('/managers', managerRoutes);
+app.use('/messages', messageRoutes);
 app.use('/', (req, res) => {
     res.status(200).json({ "it": "works" })
 })

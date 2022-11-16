@@ -29,12 +29,11 @@ function Worker() {
 
   async function getMessages() {
     const token = await getAccessTokenSilently();
-    const response = await axios.get('https://localhost:8080/workers/', {
+    const response = await axios.get('https://localhost:8080/messages/', {
       headers: {
         'Authorization': 'Bearer ' + token
       }
     });
-    console.log(response.data);
   }
 
   function save() {
