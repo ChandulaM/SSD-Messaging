@@ -87,7 +87,8 @@ function Manager() {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(
             (url) => console.log(url),
-            setLoading(false)
+            setLoading(false),
+            alert("Uploaded")
           );
         }
       );
@@ -136,7 +137,7 @@ function Manager() {
             >
               Upload File
             </Button>
-            <h3>Uploaded {progress} %</h3>
+            {/* <h3>Uploaded {progress} %</h3> */}
           </div>
           <div className={styles.messagesDiv}>
             {messages.map((message) => {
