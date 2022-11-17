@@ -35,21 +35,17 @@ function Manager() {
         }
       });
     }
-  });
 
-  const save = () => {
-    console.log("saved");
-  };
-
-  async function getMessages() {
-    const token = await getAccessTokenSilently();
-    const response = await axios.get(baseUrl + "/messages/", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    setMessages(response.data.messages);
-  }
+    async function getMessages() {
+      const token = await getAccessTokenSilently();
+      const response = await axios.get(baseUrl + "/messages/", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setMessages(response.data.messages);
+    }
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   const isMessageSavedByUser = (message) => {
     let messageSavedByUser = false;
@@ -67,12 +63,11 @@ function Manager() {
   };
 
   const handleUpload = (e) => {
-    setLoading(true);
     e.preventDefault();
     if (file.length === 0) {
       alert("Please select a file !");
     } else {
-      console.log(file);
+      setLoading(true);
       const storageRef = ref(storage, `/files/${file.type}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
@@ -89,7 +84,8 @@ function Manager() {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(
             (url) => console.log(url),
-            setLoading(false)
+            setLoading(false),
+            alert("Uploaded")
           );
         }
       );
@@ -142,7 +138,7 @@ function Manager() {
             >
               Upload File
             </Button>
-            <h3>Uploaded {progress} %</h3>
+            {/* <h3>Uploaded {progress} %</h3> */}
           </div>
           <div className={styles.messagesDiv}>
             <input type="text" onChange={(e) => {
@@ -156,7 +152,7 @@ function Manager() {
                   style={{ width: "100% !important" }}
                   message={message.messageContent}
                   isSaved={isSaved}
-                  saveMessage={save}
+                  msgId={message._id}
                 />
               );
             })}
