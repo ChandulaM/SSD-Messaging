@@ -8,7 +8,6 @@ const FileList = () => {
   const [allfiles, setAllfiles] = useState([]);
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
-
   const getAllFiles = async () => {
     const token = await getAccessTokenSilently();
     const { data } = await axios.get(baseUrl + `/file`, {
