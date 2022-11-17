@@ -18,6 +18,7 @@ function Manager() {
   const [progress, setProgress] = useState(0);
   const [file, setFile] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [inputMessage, setInputMessage] = useState("");
 
   useEffect(() => {
     async function getUserScopes() {
@@ -95,6 +96,10 @@ function Manager() {
     }
   };
 
+  const sendMessage = () => {
+    console.log(inputMessage)
+  }
+
   const ButtonStyle = { margin: "10px 10px" };
   return (
     <div className={styles.container}>
@@ -140,6 +145,9 @@ function Manager() {
             <h3>Uploaded {progress} %</h3>
           </div>
           <div className={styles.messagesDiv}>
+            <input type="text" onChange={(e) => {
+              setInputMessage(e.target.value)
+            }} /><button value="Send" onClick={sendMessage}/>
             {messages.map((message) => {
               const isSaved = isMessageSavedByUser(message);
               return (
