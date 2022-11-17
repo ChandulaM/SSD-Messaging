@@ -9,11 +9,20 @@ router.get("/", async function (req, res) {
 });
 
 router.patch("/save/:id", async function (req, res) {
-  console.log(req.body)
-  console.log(req.params.id)
+
   Message.updateOne(
     { _id: req.params.id },
     { $push: { savedBy: req.body.userEmail } }
+  ).then((data) => res.status(200).json(data));
+});
+
+router.patch("/unsave/:id", async function (req, res) {
+  let messageToUpdate = await Message.findOne({ _id: req.params.id });
+  const newSavedByList = messageToUpdate.savedBy.filter((email) => email !== req.body.userEmail);
+
+  Message.updateOne(
+    { _id: req.params.id },
+    { $set: { savedBy: newSavedByList } }
   ).then((data) => res.status(200).json(data));
 });
 

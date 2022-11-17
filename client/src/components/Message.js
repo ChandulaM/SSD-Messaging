@@ -27,14 +27,22 @@ function Message({ message, isSaved, msgId }) {
             headers: headers,
           })
         .then((response) => {
-          console.log(response);
-          alert("saved");
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
-      alert("removed");
+      axios
+        .patch(baseUrl + `/messages/unsave/${msgId}`,
+          { "userEmail": user.email },
+          {
+            headers: headers,
+          })
+        .then((response) => {
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
