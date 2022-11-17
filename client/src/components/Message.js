@@ -9,7 +9,7 @@ import baseUrl from "../config/baseUrl";
 function Message({ message, isSaved, msgId }) {
   const [messageSaved, setMessageSaved] = useState(false);
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
-
+  
   useEffect(() => {
     setMessageSaved(isSaved);
   }, [isSaved]);
@@ -19,7 +19,6 @@ function Message({ message, isSaved, msgId }) {
     const headers = {
       Authorization: "Bearer " + token,
     };
-    console.log(user.email)
     if (!messageSaved) {
       axios
         .patch(baseUrl + `/messages/save/${msgId}`,
