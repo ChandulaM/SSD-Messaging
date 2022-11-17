@@ -20,6 +20,7 @@ function Manager() {
   const [loading, setLoading] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
 
+
   useEffect(() => {
     async function getUserScopes() {
       const token = await getAccessTokenSilently();
@@ -34,18 +35,18 @@ function Manager() {
           getMessages();
         }
       });
-    }
-
-    async function getMessages() {
-      const token = await getAccessTokenSilently();
-      const response = await axios.get(baseUrl + "/messages/", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      setMessages(response.data.messages);
-    }
+    }    
   }, [getAccessTokenSilently, isAuthenticated]);
+
+  const getMessages = async () => {
+    const token = await getAccessTokenSilently();
+    const response = await axios.get(baseUrl + "/messages/", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    setMessages(response.data.messages);
+  }
 
   const isMessageSavedByUser = (message) => {
     let messageSavedByUser = false;
@@ -92,8 +93,21 @@ function Manager() {
     }
   };
 
-  const sendMessage = () => {
-    console.log(inputMessage)
+  const sendMessage = async () => {
+    const token = await getAccessTokenSilently();
+    const data = {
+      "messageContent": inputMessage
+    }
+    await axios.post(baseUrl + "/managers/send",
+      data,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+
+      });
+    setInputMessage("");
+    await getMessages();
   }
 
   const ButtonStyle = { margin: "10px 10px" };
@@ -141,9 +155,11 @@ function Manager() {
             {/* <h3>Uploaded {progress} %</h3> */}
           </div>
           <div className={styles.messagesDiv}>
-            <input type="text" onChange={(e) => {
-              setInputMessage(e.target.value)
-            }} /><button value="Send" onClick={sendMessage}/>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <input style={{ flex: '4' }} type="text" onChange={(e) => {
+                setInputMessage(e.target.value)
+              }} /><button style={{ flex: '1' }} onClick={sendMessage}>Send</button>
+            </div>
             {messages.map((message) => {
               const isSaved = isMessageSavedByUser(message);
               return (
@@ -158,9 +174,8 @@ function Manager() {
             })}
           </div>
         </>
-      ) : (
-        <div>Get out!</div>
-      )}
+      ) : 
+        <div>You are not authorized to view this content</div>}
     </div>
   );
 }

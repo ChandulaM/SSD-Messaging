@@ -31,7 +31,7 @@ var jwtCheck = jwt({
 app.use(cors());
 app.use(express.json());
 
-// app.use(jwtCheck);
+app.use(jwtCheck);
 
 app.use('/workers', workerRoutes);
 app.use('/managers', managerRoutes);

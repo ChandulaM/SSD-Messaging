@@ -25,20 +25,28 @@ function Worker() {
         }
       });
     }
-  });
+  }, []);
 
-  async function getMessages() {
+  const getMessages = async () => {
     const token = await getAccessTokenSilently();
+    console.log(token)
     const response = await axios.get(baseUrl + "/messages/", {
       headers: {
         Authorization: "Bearer " + token,
       },
     });
+    setMessages(response.data.messages);
   }
 
-  function save() {
-    console.log("message was saved");
-  }
+  const isMessageSavedByUser = (message) => {
+    let messageSavedByUser = false;
+    message.savedBy.forEach((savedByUser) => {
+      if (savedByUser === user.email) {
+        messageSavedByUser = true;
+      }
+    });
+    return messageSavedByUser;
+  };
 
   return isWorker ? (
     <>
@@ -55,16 +63,27 @@ function Worker() {
         style={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          alignItems: "stretch",
+          marginLeft: "5%",
+          marginRight: "5%"
         }}
       >
-        <Message message="Message 1" isSaved={true} saveMessage={save} />
-        <Message message="Message 2" isSaved={false} saveMessage={save} />
-        <Message message="Message 3" isSaved={true} saveMessage={save} />
+        {messages.map((message) => {
+              const isSaved = isMessageSavedByUser(message);
+              return (
+                <Message
+                  key={message._id}
+                  style={{ width: "100% !important" }}
+                  message={message.messageContent}
+                  isSaved={isSaved}
+                  msgId={message._id}
+                />
+              );
+            })}
       </div>
     </>
   ) : (
-    <div>Not authorized</div>
+    <div>You are not authorized to view this content</div>
   );
 }
 

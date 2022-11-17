@@ -9,6 +9,8 @@ router.get("/", async function (req, res) {
 });
 
 router.patch("/save/:id", async function (req, res) {
+  console.log(req.body)
+  console.log(req.params.id)
   Message.updateOne(
     { _id: req.params.id },
     { $push: { savedBy: req.body.userEmail } }

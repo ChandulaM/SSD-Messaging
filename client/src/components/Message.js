@@ -16,16 +16,17 @@ function Message({ message, isSaved, msgId }) {
 
   const saveMessage = async () => {
     const token = await getAccessTokenSilently();
-    const user = jwt_decode(token);
     const headers = {
       Authorization: "Bearer " + token,
     };
-
+    console.log(user.email)
     if (!messageSaved) {
       axios
-        .patch(baseUrl + `/message/save/${msgId}`, user.email, {
-          headers: headers,
-        })
+        .patch(baseUrl + `/messages/save/${msgId}`,
+          { "userEmail": user.email },
+          {
+            headers: headers,
+          })
         .then((response) => {
           console.log(response);
           alert("saved");
@@ -43,8 +44,9 @@ function Message({ message, isSaved, msgId }) {
       <div className={styles.messageDivIconRow}>
         <button
           className={styles.messageDivIconBtn}
-          onClick={(e) => {
-            saveMessage();
+          onClick={async (e) => {
+            e.preventDefault();
+            await saveMessage();
             setMessageSaved(!messageSaved);
           }}
         >
