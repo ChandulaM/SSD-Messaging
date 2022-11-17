@@ -34,21 +34,17 @@ function Manager() {
         }
       });
     }
-  });
 
-  const save = () => {
-    console.log("saved");
-  };
-
-  async function getMessages() {
-    const token = await getAccessTokenSilently();
-    const response = await axios.get(baseUrl + "/messages/", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    setMessages(response.data.messages);
-  }
+    async function getMessages() {
+      const token = await getAccessTokenSilently();
+      const response = await axios.get(baseUrl + "/messages/", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setMessages(response.data.messages);
+    }
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   const isMessageSavedByUser = (message) => {
     let messageSavedByUser = false;
@@ -148,7 +144,7 @@ function Manager() {
                   style={{ width: "100% !important" }}
                   message={message.messageContent}
                   isSaved={isSaved}
-                  saveMessage={save}
+                  msgId={message._id}
                 />
               );
             })}
