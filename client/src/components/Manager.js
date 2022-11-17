@@ -21,7 +21,6 @@ function Manager() {
   const [loading, setLoading] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
 
-
   useEffect(() => {
     async function getUserScopes() {
       const token = await getAccessTokenSilently();
@@ -36,7 +35,7 @@ function Manager() {
           getMessages();
         }
       });
-    }    
+    }
   }, [getAccessTokenSilently, isAuthenticated]);
 
   const getMessages = async () => {
@@ -47,7 +46,7 @@ function Manager() {
       },
     });
     setMessages(response.data.messages);
-  }
+  };
 
   const isMessageSavedByUser = (message) => {
     let messageSavedByUser = false;
@@ -60,13 +59,18 @@ function Manager() {
   };
 
   const addFileInfo = async (fName, fUrl) => {
+    const token = await getAccessTokenSilently();
     const postData = {
       fileName: fName,
       fileUrl: fUrl,
     };
     console.log(postData);
     try {
-      const res = await axios.post(baseUrl + `/file/add`, postData);
+      const res = await axios.post(baseUrl + `/file/add`, postData, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -112,19 +116,16 @@ function Manager() {
   const sendMessage = async () => {
     const token = await getAccessTokenSilently();
     const data = {
-      "messageContent": inputMessage
-    }
-    await axios.post(baseUrl + "/managers/send",
-      data,
-      {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-
-      });
+      messageContent: inputMessage,
+    };
+    await axios.post(baseUrl + "/managers/send", data, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
     setInputMessage("");
     await getMessages();
-  }
+  };
 
   const ButtonStyle = { margin: "10px 10px" };
   return (
@@ -171,10 +172,17 @@ function Manager() {
             <FileList />
           </div>
           <div className={styles.messagesDiv}>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <input style={{ flex: '4' }} type="text" onChange={(e) => {
-                setInputMessage(e.target.value)
-              }} /><button style={{ flex: '1' }} onClick={sendMessage}>Send</button>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <input
+                style={{ flex: "4" }}
+                type="text"
+                onChange={(e) => {
+                  setInputMessage(e.target.value);
+                }}
+              />
+              <button style={{ flex: "1" }} onClick={sendMessage}>
+                Send
+              </button>
             </div>
             {messages.map((message) => {
               const isSaved = isMessageSavedByUser(message);
@@ -190,8 +198,9 @@ function Manager() {
             })}
           </div>
         </>
-      ) : 
-        <div>You are not authorized to view this content</div>}
+      ) : (
+        <div>You are not authorized to view this content</div>
+      )}
     </div>
   );
 }
