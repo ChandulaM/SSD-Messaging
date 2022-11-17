@@ -9,6 +9,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "../config/firebase";
 import { Button } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+import FileList from "./FileList";
 
 function Manager() {
   const [isManager, setIsManager] = useState(false);
@@ -57,6 +58,20 @@ function Manager() {
     return messageSavedByUser;
   };
 
+  const addFileInfo = async (fName, fUrl) => {
+    const postData = {
+      fileName: fName,
+      fileUrl: fUrl,
+    };
+    console.log(postData);
+    try {
+      const res = await axios.post(baseUrl + `/file/add`, postData);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const fileHandler = (e) => {
     setProgress(0);
     setFile(e.target.files[0]);
@@ -82,19 +97,20 @@ function Manager() {
           console.log(err);
         },
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(
-            (url) => console.log(url),
-            setLoading(false),
-            alert("Uploaded")
-          );
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            console.log(file.name + url);
+            addFileInfo(file.name, url);
+            alert("Uploaded");
+            setLoading(false);
+          });
         }
       );
     }
   };
 
   const sendMessage = () => {
-    console.log(inputMessage)
-  }
+    console.log(inputMessage);
+  };
 
   const ButtonStyle = { margin: "10px 10px" };
   return (
@@ -138,12 +154,16 @@ function Manager() {
             >
               Upload File
             </Button>
-            {/* <h3>Uploaded {progress} %</h3> */}
+            <FileList />
           </div>
           <div className={styles.messagesDiv}>
-            <input type="text" onChange={(e) => {
-              setInputMessage(e.target.value)
-            }} /><button value="Send" onClick={sendMessage}/>
+            <input
+              type="text"
+              onChange={(e) => {
+                setInputMessage(e.target.value);
+              }}
+            />
+            <button value="Send" onClick={sendMessage} />
             {messages.map((message) => {
               const isSaved = isMessageSavedByUser(message);
               return (

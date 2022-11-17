@@ -9,7 +9,7 @@ import baseUrl from "../config/baseUrl";
 function Message({ message, isSaved, msgId }) {
   const [messageSaved, setMessageSaved] = useState(false);
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
-
+  
   useEffect(() => {
     setMessageSaved(isSaved);
   }, [isSaved]);
@@ -23,9 +23,13 @@ function Message({ message, isSaved, msgId }) {
 
     if (!messageSaved) {
       axios
-        .patch(baseUrl + `/message/save/${msgId}`, user.email, {
-          headers: headers,
-        })
+        .patch(
+          baseUrl + `/message/save/${msgId}`,
+          { userEmail: user.email },
+          {
+            headers: headers,
+          }
+        )
         .then((response) => {
           console.log(response);
           alert("saved");
